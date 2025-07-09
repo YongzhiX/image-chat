@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aimage Chat</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; max-width: 600px; margin: auto; }
+    input, textarea, button { width: 100%; margin-top: 1em; padding: 0.5em; }
+  </style>
+</head>
+<body>
+  <h2>Talk to Aimage 👋</h2>
+  <p>Upload up to 2 images and describe what you want.</p>
+
+  <input type="file" id="image1" accept="image/*"><br>
+  <input type="file" id="image2" accept="image/*"><br>
+  <textarea id="prompt" rows="5" placeholder="Describe what you want..."></textarea>
+  <button onclick="sendToN8N()">Submit</button>
+
+  <p id="status"></p>
+
+  <script>
+    async function sendToN8N() {
+      const status = document.getElementById("status");
+      status.textContent = "Uploading...";
+
+      const formData = new FormData();
+      formData.append("prompt", document.getElementById("prompt").value);
+      if (document.getElementById("image1").files[0])
+        formData.append("image1", document.getElementById("image1").files[0]);
+      if (document.getElementById("image2").files[0])
+        formData.append("image2", document.getElementById("image2").files[0]);
+
+      try {
+        await fetch("https://YOUR-N8N-WEBHOOK-URL", {
+          method: "POST",
+          body: formData
+        });
+        status.textContent = "Submitted successfully ✅";
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Submission failed ❌";
+      }
+    }
+  </script>
+</body>
+</html>
